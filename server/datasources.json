@@ -1,6 +1,16 @@
 {
-  "db": {
-    "name": "db",
+  "dbMemory": {
+    "name": "dbMemory",
     "connector": "memory"
+  },
+  "db": {
+    "host": "127.0.0.1",
+    "port": 27017,
+    "url": "",
+    "database": "wordz-dev1",
+    "password": "",
+    "name": "db",
+    "user": "",
+    "connector": "mongodb"
   }
 }
