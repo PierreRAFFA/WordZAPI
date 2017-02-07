@@ -44,5 +44,13 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "game": {
+    "dataSource": "db",
+    "public": true
+  },
+  "gameStatistics": {
+    "dataSource": "db",
+    "public": false
   }
 }

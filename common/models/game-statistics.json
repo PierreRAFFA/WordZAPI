@@ -1,0 +1,34 @@
+{
+  "name": "gameStatistics",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "numWords": {
+      "type": "number",
+      "required": true
+    },
+    "longestWord": {
+      "type": "string",
+      "required": true
+    },
+    "highestScoringWord": {
+      "type": "string",
+      "required": true
+    },
+    "highestScoringWordScore": {
+      "type": "number",
+      "required": true
+    },
+    "wordsPerMinute": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
