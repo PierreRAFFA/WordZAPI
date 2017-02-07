@@ -56,18 +56,3 @@ module.exports = function(app) {
        }
     });
 };
-
-/**
- creation_date
- user
- language
- score
- statistics
-    numWords
-    longestWord
-    highestScoringWord
-    highestScoringWordScore
-    wordsPerMinute
-
-
- */

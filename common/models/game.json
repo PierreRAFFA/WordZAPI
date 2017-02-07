@@ -10,10 +10,6 @@
       "type": "date",
       "required": true
     },
-    "user": {
-      "type": "user",
-      "required": true
-    },
     "language": {
       "type": "string",
       "required": true
@@ -28,7 +24,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "users": {
+      "type": "hasOne",
+      "model": "user",
+      "foreignKey": "_id"
+    }
+  },
   "acls": [],
   "methods": {}
 }
