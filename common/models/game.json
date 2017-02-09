@@ -21,14 +21,18 @@
     "statistics": {
       "type": "gameStatistics",
       "required": true
+    },
+    "userId": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],
   "relations": {
-    "users": {
-      "type": "hasOne",
+    "user": {
+      "type": "belongsTo",
       "model": "user",
-      "foreignKey": "_id"
+      "foreignKey": "userId"
     }
   },
   "acls": [],

@@ -19,6 +19,11 @@
       "type": "hasMany",
       "model": "userCredential",
       "foreignKey": "userId"
+    },
+    "games": {
+      "type": "hasMany",
+      "model": "game",
+      "foreignKey": "userId"
     }
   },
   "acls": [],
