@@ -24,6 +24,10 @@ module.exports = function(Game) {
     Game.on('dataSourceAttached', function(obj){
         var find = Game.find;
         Game.find = function(filter, cb) {
+
+            //Todo Careful here if there is a filter
+            arguments[0] = {include: 'user'};
+
             return find.apply(this, arguments);
         };
     });
