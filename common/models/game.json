@@ -8,7 +8,8 @@
   "properties": {
     "creationDate": {
       "type": "date",
-      "required": true
+      "required": true,
+      "defaultFn": "now"
     },
     "language": {
       "type": "string",
