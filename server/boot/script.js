@@ -1,4 +1,5 @@
 // {"email":"admin@wordz.com", "password":"Test123"}
+// {"email":"643152695835881@loopback.facebook.com", "password":"Test123"}
 
 module.exports = function(app) {
     var User = app.models.user;

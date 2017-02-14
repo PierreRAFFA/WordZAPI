@@ -25,8 +25,21 @@ module.exports = function(Game) {
         var find = Game.find;
         Game.find = function(filter, cb) {
 
-            //Todo Careful here if there is a filter
-            arguments[0] = {include: 'user'};
+            const include = {
+                relation: 'user',
+                scope: {
+                    fields: ['identities'],
+                    include: {
+                        relation: 'identities',
+                        scope: {
+                            fields: ['profile'],
+                        }
+                    },
+                },
+            }
+
+            // Careful here if there is a filter but that should not be the case
+            arguments[0] = {include: include, order: 'creationDate DESC', limit: 15};
 
             return find.apply(this, arguments);
         };

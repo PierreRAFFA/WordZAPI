@@ -1,3 +1,7 @@
+// Copyright IBM Corp. 2014,2016. All Rights Reserved.
+// Node module: loopback-example-passport
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
 'use strict';
 
 var loopback = require('loopback');
@@ -66,13 +70,13 @@ app.middleware('session', session({
   saveUninitialized: true,
   resave: true,
 }));
-passportConfigurator.init();
+const passport = passportConfigurator.init();
 
 // We need flash messages to see passport errors
 app.use(flash());
 
 passportConfigurator.setupModels({
-  userModel: app.models.User,
+  userModel: app.models.user,
   userIdentityModel: app.models.userIdentity,
   userCredentialModel: app.models.userCredential,
 });
@@ -150,6 +154,59 @@ app.get('/auth/logout', function(req, res, next) {
   req.logout();
   res.redirect('/');
 });
+
+/**
+ * Temporarily, add 'passport' property to the passportConfigurator.js
+ * The case of mobile app authenticating server-side with passport-facebook-token will potentially be managed by loopback-component-passport
+ * More explanation here: https://github.com/strongloop/loopback-example-passport/issues/11
+ */
+/**
+ * Added by PierreRAFFA
+ */
+app.post('/auth/facebook/token',
+    passport.authenticate('facebook-token'),
+    function (req, res) {
+      console.log(req.body)
+
+      const serverAccessToken = req.authInfo.accessToken.id;
+
+      //get user
+      if (req.user) {
+
+        //set the default result
+        var result = req.user;
+
+        result.accessToken = serverAccessToken;
+
+        //find facebook profile and set it as value
+        req.user.identities(function(err, identities) {
+
+          for(var index in identities) {
+            if ( identities[index].provider == "facebook") {
+
+              var profile = identities[index].profile;
+              delete profile._raw;
+              delete profile._json;
+
+              result.profile = profile;
+            }
+          }
+
+          //Todo Potentially useless
+          // var ns = loopback.getCurrentContext();
+          // ns.set('user' , req.user);
+
+          //write the result
+          res.setHeader('Content-Type', 'application/json');
+          res.write(JSON.stringify(result));
+          res.end();
+
+        });
+      }else{
+        res.send(401);
+      }
+    }
+);
 
 app.start = function() {
   // start the web server
