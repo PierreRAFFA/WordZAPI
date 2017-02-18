@@ -4,8 +4,14 @@ var _ = require('lodash');
 
 module.exports = function (User) {
 
+  // var Languages = {
+  //   en_GB: app.models.userStatistics,
+  //   fr_FR: app.models.userStatistics
+  // };
+
+
   /**
-   * Return the top20
+   * Returns the top20
    * https://loopback.io/doc/en/lb3/Remote-methods.html
    */
   User.top20 = function (cb) {

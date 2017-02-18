@@ -35,23 +35,29 @@ module.exports = function (Game) {
         next(null);
       } else {
 
-        //update the user statistics
-        user.statistics.numGames = ++user.statistics.numGames || 1;
-        user.statistics.totalRankingScore = user.statistics.totalRankingScore + game.score || game.score;
-        user.statistics.highestRankingScore = Math.max(user.statistics.highestRankingScore, game.score) || game.score;
-        user.statistics.averageRankingScore = user.statistics.totalRankingScore / user.statistics.numGames;
+        var languageStatistics;
+        if (game.language in user.statistics === false) {
+          user.statistics[game.language] = {};
+        }
+        languageStatistics = user.statistics[game.language];
 
-        if (game.statistics.highestScoringWordScore >= user.statistics.highestScoringWordScore) {
-          user.statistics.highestScoringWord = game.statistics.highestScoringWord;
-          user.statistics.highestScoringWordScore = game.statistics.highestScoringWordScore;
+        //update the user statistics
+        languageStatistics.numGames = ++languageStatistics.numGames || 1;
+        languageStatistics.totalRankingScore = languageStatistics.totalRankingScore + game.score || game.score;
+        languageStatistics.highestRankingScore = Math.max(languageStatistics.highestRankingScore, game.score) || game.score;
+        languageStatistics.averageRankingScore = languageStatistics.totalRankingScore / languageStatistics.numGames;
+
+        if (!languageStatistics.highestScoringWordScore || game.statistics.highestScoringWordScore >= languageStatistics.highestScoringWordScore) {
+          languageStatistics.highestScoringWord = game.statistics.highestScoringWord;
+          languageStatistics.highestScoringWordScore = game.statistics.highestScoringWordScore;
         }
 
-        user.statistics.totalWordsPerMinute = user.statistics.totalWordsPerMinute + game.statistics.wordsPerMinute || game.statistics.wordsPerMinute;
-        user.statistics.highestWordsPerMinute = Math.max(user.statistics.highestWordsPerMinute, game.statistics.wordsPerMinute) || game.statistics.wordsPerMinute;
-        user.statistics.averageWordsPerMinute = user.statistics.totalWordsPerMinute / user.statistics.numGames;
+        languageStatistics.totalWordsPerMinute = languageStatistics.totalWordsPerMinute + game.statistics.wordsPerMinute || game.statistics.wordsPerMinute;
+        languageStatistics.highestWordsPerMinute = Math.max(languageStatistics.highestWordsPerMinute, game.statistics.wordsPerMinute) || game.statistics.wordsPerMinute;
+        languageStatistics.averageWordsPerMinute = languageStatistics.totalWordsPerMinute / languageStatistics.numGames;
 
-        if (!user.statistics.longestWord || game.statistics.longestWord.length > user.statistics.longestWord.length) {
-          user.statistics.longestWord = game.statistics.longestWord;
+        if (!languageStatistics.longestWord || game.statistics.longestWord.length > languageStatistics.longestWord.length) {
+          languageStatistics.longestWord = game.statistics.longestWord;
         }
 
         user.save().then(() => {

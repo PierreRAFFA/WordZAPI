@@ -4,7 +4,7 @@
   "base": "User",
   "properties": {
     "statistics": {
-      "type": "userStatistics",
+      "type": "Object",
       "default": {}
     }
   },
