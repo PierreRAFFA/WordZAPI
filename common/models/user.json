@@ -8,7 +8,7 @@
       "default": {}
     }
   },
-  "validations": [],
+  "hidden": ["id"],
   "relations": {
     "accessTokens": {
       "type": "hasMany",
@@ -37,6 +37,13 @@
       "principalType": "ROLE",
       "principalId": "$owner",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "top20"
     }
   ],
   "methods": {}

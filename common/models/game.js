@@ -21,6 +21,9 @@ module.exports = function (Game) {
   Game.disableRemoteMethodByName('upsertWithWhere');
   Game.disableRemoteMethodByName('prototype.patchAttributes');
 
+  /**
+   * After save, update the user statistics
+   */
   Game.observe('after save', function (ctx, next) {
     console.log('supports isNewInstance?', ctx.isNewInstance !== undefined);
     const game = ctx.instance;
@@ -57,6 +60,9 @@ module.exports = function (Game) {
     });
   });
 
+  /**
+   * Find Games and include the user and userIdentity
+   */
   Game.on('dataSourceAttached', function (obj) {
     var find = Game.find;
     Game.find = function (filter, cb) {
@@ -78,29 +84,5 @@ module.exports = function (Game) {
 
       return find.apply(this, arguments);
     };
-
-    // var create = Game.create;
-    // Game.create = function (data, options, cb) {
-    //
-    //
-    //   return create.apply(this, arguments);
-    // };
   });
-
-  /**
-   * https://loopback.io/doc/en/lb3/Remote-methods.html
-   */
-  Game.top20 = function (cb) {
-    Game.find.apply(this, [null, cb]);
-  };
-
-  Game.remoteMethod('top20', {
-    http: {
-      path: '/top20',
-      verb: 'get'
-    },
-    returns: { arg: 'top20', type: 'array' }
-  });
-
-
 };

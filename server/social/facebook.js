@@ -75,7 +75,7 @@ module.exports = function (app, passport) {
     // Let's create a user for that
     var profileEmail = profile.emails && profile.emails[0] &&
       profile.emails[0].value;
-    var generatedEmail = (profile.username || profile.id) + '@loopback.' +
+    var generatedEmail = (profile.username || profile.id) + '@wordz.' +
       (profile.provider || provider) + '.com';
     var email = provider === 'ldap' ? profileEmail : generatedEmail;
     var username = provider + '.' + (profile.username || profile.id);
@@ -90,5 +90,5 @@ module.exports = function (app, passport) {
     return userObj;
   }
 
-}
+};
 
