@@ -1,4 +1,5 @@
 'use strict';
+var _ = require('lodash');
 
 module.exports = function (Game) {
 
@@ -40,7 +41,7 @@ module.exports = function (Game) {
         user.statistics.highestRankingScore = Math.max(user.statistics.highestRankingScore, game.score) || game.score;
         user.statistics.averageRankingScore = user.statistics.totalRankingScore / user.statistics.numGames;
 
-        if (game.statistics.highestScoringWordScore >= user.statistics.highestScoringWordScore ) {
+        if (game.statistics.highestScoringWordScore >= user.statistics.highestScoringWordScore) {
           user.statistics.highestScoringWord = game.statistics.highestScoringWord;
           user.statistics.highestScoringWordScore = game.statistics.highestScoringWordScore;
         }
@@ -49,7 +50,7 @@ module.exports = function (Game) {
         user.statistics.highestWordsPerMinute = Math.max(user.statistics.highestWordsPerMinute, game.statistics.wordsPerMinute) || game.statistics.wordsPerMinute;
         user.statistics.averageWordsPerMinute = user.statistics.totalWordsPerMinute / user.statistics.numGames;
 
-        if (!user.statistics.longestWord || game.statistics.longestWord.length > user.statistics.longestWord.length ) {
+        if (!user.statistics.longestWord || game.statistics.longestWord.length > user.statistics.longestWord.length) {
           user.statistics.longestWord = game.statistics.longestWord;
         }
 
@@ -64,25 +65,41 @@ module.exports = function (Game) {
    * Find Games and include the user and userIdentity
    */
   Game.on('dataSourceAttached', function (obj) {
-    var find = Game.find;
-    Game.find = function (filter, cb) {
-      const include = {
-        relation: 'user',
-        scope: {
-          fields: ['identities'],
+      var find = Game.find;
+      Game.find = function (filter, token, cb) {
+
+        filter = _.assign({}, filter, {
+          fields: { statistics: false },
           include: {
-            relation: 'identities',
+            relation: 'user',
             scope: {
-              fields: ['profile'],
+              fields: ['identities', 'username'],
+              include: {
+                relation: 'identities',
+                scope: {
+                  fields: ['profile'],
+                }
+              }
+            },
+          },
+          order: 'creationDate DESC',
+          limit: 15
+        });
+
+        find.apply(this, [filter]).then(games => {
+
+          games = _.map(games, game => {
+            if (game.__data.user) {
+              //Todo tricky ?
+              game.__data.user.__data.identities[0].__data.profile =
+                _.pick(game.__data.user.__data.identities[0].__data.profile, ['photos']);
             }
-          }
-        }
+            return game;
+          });
+
+          cb(null, games);
+        });
       };
-
-      // Careful here if there is a filter but that should not be the case
-      arguments[0] = { include: include, order: 'creationDate DESC', limit: 15 };
-
-      return find.apply(this, arguments);
-    };
-  });
+    }
+  );
 };

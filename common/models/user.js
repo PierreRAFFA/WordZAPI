@@ -27,7 +27,7 @@ module.exports = function (User) {
 
         //Todo tricky ?
         user.__data.identities[0].__data.profile =
-          _.pick(user.__data.identities[0].__data.profile, ['displayName', 'photos']);
+          _.pick(user.__data.identities[0].__data.profile, ['photos']);
         return user;
       });
       cb(null, users);
