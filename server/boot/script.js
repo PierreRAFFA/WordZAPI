@@ -5,7 +5,7 @@ module.exports = function(app) {
     var User = app.models.user;
     var Role = app.models.Role;
     var RoleMapping = app.models.RoleMapping;
-
+    return;
     User.find({ where: { username: 'Admin' }}, function(err, user) {
        if (user.length === 0) {
            User.create([

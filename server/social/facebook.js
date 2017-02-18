@@ -51,16 +51,20 @@ module.exports = function (app, passport) {
     };
 
     const callback = (err, user, identity, token) => {
-      User.login({ email: user.email, password: defaultPassword }, function (err, accessToken) {
-        console.log("accessToken after login:");
+      if (err) {
+        done(err);
+      }else{
+        User.login({ email: user.email, password: defaultPassword }, function (err, accessToken) {
+          console.log("accessToken after login:");
 
-        // May be null if the user has just been created.
-        // For now, I use token and not accessToken
-        console.log(accessToken);
+          // May be null if the user has just been created.
+          // For now, I use token and not accessToken
+          console.log(accessToken);
 
-        user.accessToken = token.id;
-        done(null, user);
-      });
+          user.accessToken = token.id;
+          done(null, user);
+        });
+      }
     };
 
     //login user or create user / userIdentity / accessToken

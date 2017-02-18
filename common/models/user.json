@@ -2,7 +2,12 @@
   "name": "user",
   "plural": "users",
   "base": "User",
-  "properties": {},
+  "properties": {
+    "statistics": {
+      "type": "userStatistics",
+      "default": {}
+    }
+  },
   "validations": [],
   "relations": {
     "accessTokens": {

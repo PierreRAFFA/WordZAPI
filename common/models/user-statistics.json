@@ -1,0 +1,47 @@
+{
+  "name": "userStatistics",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "highestRank": {
+      "type": "number"
+    },
+    "highestRankingScore": {
+      "type": "number"
+    },
+    "averageRankingScore": {
+      "type": "number"
+    },
+    "totalRankingScore": {
+      "type": "number"
+    },
+    "highestScoringWord": {
+      "type": "string"
+    },
+    "highestScoringWordScore": {
+      "type": "number"
+    },
+    "highestWordsPerMinute": {
+      "type": "number"
+    },
+    "averageWordsPerMinute": {
+      "type": "number"
+    },
+    "totalWordsPerMinute": {
+      "type": "number"
+    },
+    "longestWord": {
+      "type": "string"
+    },
+    "numGames": {
+      "type": "number"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

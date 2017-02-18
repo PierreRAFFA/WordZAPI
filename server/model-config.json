@@ -52,5 +52,9 @@
   "gameStatistics": {
     "dataSource": "db",
     "public": false
+  },
+  "userStatistics": {
+    "dataSource": "db",
+    "public": false
   }
 }
