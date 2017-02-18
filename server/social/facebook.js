@@ -16,8 +16,12 @@ module.exports = function (app, passport) {
 
         const UserIdentity = app.models.userIdentity;
 
+        const filters = {
+          where: { userId: req.user.id }
+        };
+
         //get the user social profile
-        UserIdentity.find({ userId: req.user.id }, function (error, userIndentities) {
+        UserIdentity.find(filters , function (error, userIndentities) {
           if (error) {
             res.send(500);
           } else {

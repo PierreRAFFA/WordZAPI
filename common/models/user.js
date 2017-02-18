@@ -21,8 +21,11 @@ module.exports = function (User) {
     };
     User.find.apply(this, [filters]).then( users => {
 
-      //Todo tricky ?
+      var rank = 1;
       users = _.map(users, user => {
+        user.rank = rank++;
+
+        //Todo tricky ?
         user.__data.identities[0].__data.profile =
           _.pick(user.__data.identities[0].__data.profile, ['displayName', 'photos']);
         return user;

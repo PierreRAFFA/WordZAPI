@@ -18,7 +18,7 @@
     "provider": "facebook",
     "module": "passport-facebook-token",
     "profileFields": ["gender", "link", "locale", "name", "timezone",
-      "verified", "email", "updated_time"],
+        "verified", "email", "updated_time"],
     "clientID": "1599447003703902",
     "clientSecret": "6dd5a11669d7e479de22efd3e60f18b1",
     "callbackURL": "http://local.wordz.com:3010/auth/facebook/callback",
