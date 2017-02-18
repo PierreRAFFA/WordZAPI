@@ -31,7 +31,7 @@ var bodyParser = require('body-parser');
  * if any. This is often the best approach, because the verify callback
  * can make the most accurate determination of why authentication failed.
  */
-var flash      = require('express-flash');
+var flash = require('express-flash');
 
 // attempt to build the providers/passport config
 var config = {};
@@ -87,35 +87,38 @@ for (var s in config) {
 }
 var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
-app.get('/', function(req, res, next) {
-  res.render('pages/index', {user:
-  req.user,
+//////////////////////////////////////////////////////////////// FACEBOOK
+require('./social/facebook')(app, passport);
+
+app.get('/', function (req, res, next) {
+  res.render('pages/index', {
+    user: req.user,
     url: req.url,
   });
 });
 
-app.get('/auth/account', ensureLoggedIn('/login'), function(req, res, next) {
+app.get('/auth/account', ensureLoggedIn('/login'), function (req, res, next) {
   res.render('pages/loginProfiles', {
     user: req.user,
     url: req.url,
   });
 });
 
-app.get('/local', function(req, res, next) {
+app.get('/local', function (req, res, next) {
   res.render('pages/local', {
     user: req.user,
     url: req.url,
   });
 });
 
-app.get('/signup', function(req, res, next) {
+app.get('/signup', function (req, res, next) {
   res.render('pages/signup', {
     user: req.user,
     url: req.url,
   });
 });
 
-app.post('/signup', function(req, res, next) {
+app.post('/signup', function (req, res, next) {
   var User = app.models.user;
 
   var newUser = {};
@@ -123,7 +126,7 @@ app.post('/signup', function(req, res, next) {
   newUser.username = req.body.username.trim();
   newUser.password = req.body.password;
 
-  User.create(newUser, function(err, user) {
+  User.create(newUser, function (err, user) {
     if (err) {
       req.flash('error', err.message);
       return res.redirect('back');
@@ -132,7 +135,7 @@ app.post('/signup', function(req, res, next) {
       // that can be used to establish a login session. This function is
       // primarily used when users sign up, during which req.login() can
       // be invoked to log in the newly registered user.
-      req.login(user, function(err) {
+      req.login(user, function (err) {
         if (err) {
           req.flash('error', err.message);
           return res.redirect('back');
@@ -143,74 +146,21 @@ app.post('/signup', function(req, res, next) {
   });
 });
 
-app.get('/login', function(req, res, next) {
+app.get('/login', function (req, res, next) {
   res.render('pages/login', {
     user: req.user,
     url: req.url,
   });
 });
 
-app.get('/auth/logout', function(req, res, next) {
+app.get('/auth/logout', function (req, res, next) {
   req.logout();
   res.redirect('/');
 });
 
-/**
- * Temporarily, add 'passport' property to the passportConfigurator.js
- * The case of mobile app authenticating server-side with passport-facebook-token will potentially be managed by loopback-component-passport
- * More explanation here: https://github.com/strongloop/loopback-example-passport/issues/11
- */
-/**
- * Added by PierreRAFFA
- */
-app.post('/auth/facebook/token',
-    passport.authenticate('facebook-token'),
-    function (req, res) {
-      console.log(req.body)
-
-      const serverAccessToken = req.authInfo.accessToken.id;
-
-      //get user
-      if (req.user) {
-
-        //set the default result
-        var result = req.user;
-
-        result.accessToken = serverAccessToken;
-
-        //find facebook profile and set it as value
-        req.user.identities(function(err, identities) {
-
-          for(var index in identities) {
-            if ( identities[index].provider == "facebook") {
-
-              var profile = identities[index].profile;
-              delete profile._raw;
-              delete profile._json;
-
-              result.profile = profile;
-            }
-          }
-
-          //Todo Potentially useless
-          // var ns = loopback.getCurrentContext();
-          // ns.set('user' , req.user);
-
-          //write the result
-          res.setHeader('Content-Type', 'application/json');
-          res.write(JSON.stringify(result));
-          res.end();
-
-        });
-      }else{
-        res.send(401);
-      }
-    }
-);
-
-app.start = function() {
+app.start = function () {
   // start the web server
-  return app.listen(function() {
+  return app.listen(function () {
     app.emit('started');
     var baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
