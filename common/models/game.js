@@ -47,7 +47,8 @@ module.exports = function (Game) {
         languageStatistics.highestRankingScore = Math.max(languageStatistics.highestRankingScore, game.score) || game.score;
         languageStatistics.averageRankingScore = languageStatistics.totalRankingScore / languageStatistics.numGames;
 
-        if (!languageStatistics.highestScoringWordScore || game.statistics.highestScoringWordScore >= languageStatistics.highestScoringWordScore) {
+        if (!languageStatistics.highestScoringWordScore ||
+          game.statistics.highestScoringWordScore >= languageStatistics.highestScoringWordScore) {
           languageStatistics.highestScoringWord = game.statistics.highestScoringWord;
           languageStatistics.highestScoringWordScore = game.statistics.highestScoringWordScore;
         }
@@ -56,7 +57,8 @@ module.exports = function (Game) {
         languageStatistics.highestWordsPerMinute = Math.max(languageStatistics.highestWordsPerMinute, game.statistics.wordsPerMinute) || game.statistics.wordsPerMinute;
         languageStatistics.averageWordsPerMinute = languageStatistics.totalWordsPerMinute / languageStatistics.numGames;
 
-        if (!languageStatistics.longestWord || game.statistics.longestWord.length > languageStatistics.longestWord.length) {
+        if (!languageStatistics.longestWord ||
+          game.statistics.longestWord.length > languageStatistics.longestWord.length) {
           languageStatistics.longestWord = game.statistics.longestWord;
         }
 
@@ -71,41 +73,53 @@ module.exports = function (Game) {
    * Find Games and include the user and userIdentity
    */
   Game.on('dataSourceAttached', function (obj) {
-      var find = Game.find;
-      Game.find = function (filter, token, cb) {
+    var find = Game.find;
+    Game.find = function (filter, token, cb) {
 
-        filter = _.assign({}, filter, {
-          fields: { statistics: false },
-          include: {
-            relation: 'user',
-            scope: {
-              fields: ['identities', 'username'],
-              include: {
-                relation: 'identities',
-                scope: {
-                  fields: ['profile'],
-                }
+      filter = _.assign({}, filter, {
+        fields: { statistics: false },
+        include: {
+          relation: 'user',
+          scope: {
+            fields: ['identities', 'username'],
+            include: {
+              relation: 'identities',
+              scope: {
+                fields: ['profile'],
               }
-            },
-          },
-          order: 'creationDate DESC',
-          limit: 15
-        });
-
-        find.apply(this, [filter]).then(games => {
-
-          games = _.map(games, game => {
-            if (game.__data.user) {
-              //Todo tricky ?
-              game.__data.user.__data.identities[0].__data.profile =
-                _.pick(game.__data.user.__data.identities[0].__data.profile, ['photos']);
             }
-            return game;
-          });
+          }
+        },
+        order: 'creationDate DESC',
+        limit: 15
+      });
 
-          cb(null, games);
+      find.apply(this, [filter]).then(games => {
+        games = _.map(games, game => {
+          if (game.__data.user) {
+            //Todo tricky ?
+            game.__data.user.__data.identities[0].__data.profile =
+              _.pick(game.__data.user.__data.identities[0].__data.profile, ['photos']);
+          }
+          return game;
         });
-      };
+
+        cb(null, games);
+      });
+    };
+
+    /**
+     * Override the game creation and returns the up-to-date user statistics
+     * @type {Game.create|*}
+     */
+    var create = Game.create;
+    Game.create = function (data, options, cb) {
+      create.apply(this, [data, options]).then( game => {
+        game.user.getAsync().then( user => {
+          console.log(user.statistics);
+          cb(null, user.statistics);
+        })
+      });
     }
-  );
+  });
 };
