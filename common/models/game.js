@@ -62,6 +62,9 @@ module.exports = function (Game) {
           languageStatistics.longestWord = game.statistics.longestWord;
         }
 
+        //decrease balance
+        user.balance -= 1;
+
         user.save().then(() => {
           next();
         });
@@ -116,8 +119,7 @@ module.exports = function (Game) {
     Game.create = function (data, options, cb) {
       create.apply(this, [data, options]).then( game => {
         game.user.getAsync().then( user => {
-          console.log(user.statistics);
-          cb(null, user.statistics);
+          cb(null, user);
         })
       });
     }

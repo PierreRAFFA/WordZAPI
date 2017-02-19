@@ -3,6 +3,10 @@
   "plural": "users",
   "base": "User",
   "properties": {
+    "balance" : {
+      "type": "number",
+      "default": 15
+    },
     "statistics": {
       "type": "Object",
       "default": {}
