@@ -7,4 +7,5 @@ Loopback
 NodeJS  
 MongoDB  
 Passport  
-FacebookToken  
+Facebook API  
+Google API
