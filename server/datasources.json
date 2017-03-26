@@ -4,7 +4,7 @@
     "connector": "memory"
   },
   "db": {
-    "host": "127.0.0.1",
+    "host": "mongo",
     "port": 27017,
     "url": "",
     "database": "wordz-dev1",
