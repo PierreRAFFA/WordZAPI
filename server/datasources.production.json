@@ -1,0 +1,12 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "mongodb",
+    "host": "mongo",
+    "port": 27017,
+    "url": "",
+    "database": "wordz-dev1",
+    "user": "",
+    "password": ""
+  }
+}

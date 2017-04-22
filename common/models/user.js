@@ -32,8 +32,8 @@ module.exports = function (User) {
         user.rank = rank++;
 
         //Todo tricky ?
-        user.__data.identities[0].__data.profile =
-          _.pick(user.__data.identities[0].__data.profile, ['photos']);
+        // user.__data.identities[0].__data.profile =
+        //   _.pick(user.__data.identities[0].__data.profile, ['photos']);
         return user;
       });
       cb(null, users);

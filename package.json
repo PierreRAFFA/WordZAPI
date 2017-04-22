@@ -4,7 +4,8 @@
   "main": "server/server.js",
   "scripts": {
     "lint": "eslint .",
-    "start": "node .",
+    "start-dev": "NODE_ENV=development node .",
+    "start": "NODE_ENV=production node .",
     "posttest": "npm run lint && nsp check"
   },
   "dependencies": {

@@ -2,15 +2,5 @@
   "dbMemory": {
     "name": "dbMemory",
     "connector": "memory"
-  },
-  "db": {
-    "host": "mongo",
-    "port": 27017,
-    "url": "",
-    "database": "wordz-dev1",
-    "password": "",
-    "name": "db",
-    "user": "",
-    "connector": "mongodb"
   }
 }

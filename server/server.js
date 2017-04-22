@@ -3,6 +3,7 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 'use strict';
+console.log('NODE_ENV:' + process.env.NODE_ENV);
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
@@ -175,3 +176,4 @@ app.start = function () {
 if (require.main === module) {
   app.start();
 }
+
