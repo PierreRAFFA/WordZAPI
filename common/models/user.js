@@ -27,16 +27,22 @@ module.exports = function (User) {
     };
     User.find.apply(this, [filters]).then( users => {
 
+      //add manually the rank to the user and avoid non-gamers such as admins
       var rank = 1;
-      users = _.map(users, user => {
-        user.rank = rank++;
+      var userRanking = _.chain(users)
+        .filter(user => user.__data.identities.length > 0)
+        .map(user => {
+          user.rank = rank++;
 
-        //Todo tricky ?
-        // user.__data.identities[0].__data.profile =
-        //   _.pick(user.__data.identities[0].__data.profile, ['photos']);
-        return user;
-      });
-      cb(null, users);
+          //Todo: tricky ?
+          //pick only the photos properties, the rest should not be part of the result.
+          user.__data.identities[0].__data.profile = _.pick(user.__data.identities[0].__data.profile, ['photos']);
+
+          return user;
+        })
+        .value();
+
+      cb(null, userRanking);
     })
   };
 
