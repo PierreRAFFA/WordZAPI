@@ -101,6 +101,7 @@ module.exports = function (Game) {
         games = _.map(games, game => {
           if (game.__data.user) {
             //Todo tricky ?
+            game.serverDate = new Date().toISOString();
             game.__data.user.__data.identities[0].__data.profile =
               _.pick(game.__data.user.__data.identities[0].__data.profile, ['photos']);
           }

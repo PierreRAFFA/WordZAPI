@@ -16,6 +16,7 @@ Docker
 ###Build and push
 docker build -t pierreraffa/wordz-api:0.2 .  
 docker push pierreraffa/wordz-api:0.2  
+docker pull pierreraffa/wordz-api:0.2
 
 ###Create containers
 docker pull mongo  
