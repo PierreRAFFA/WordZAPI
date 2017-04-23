@@ -16,6 +16,7 @@ module.exports = function (User) {
    */
   User.top20 = function (cb) {
 
+    //Todo specify the language as a parameter
     const filters = {
       include: {
         relation: 'identities',
@@ -23,7 +24,7 @@ module.exports = function (User) {
           fields: ['profile'],
         }
       },
-      order: 'statistics.highestRankingScore DESC'
+      order: 'statistics.en_GB.highestRankingScore DESC'
     };
     User.find.apply(this, [filters]).then( users => {
 
