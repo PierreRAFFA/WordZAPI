@@ -25,6 +25,8 @@ docker run --name wordz-mongo -v /Users/pierre/WORKSPACE/Wordz/WordzAPI/db:/data
 docker run --name wordz-mongo -v /wordz/prod/db:/data/db -d mongo
     
 docker run --name wordz-api -p 3010:3010 --link wordz-mongo:mongo -d pierreraffa/wordz-api:0.1  
+
+docker run --name wordz-cron --link wordz-mongo:mongo -d pierreraffa/wordz-cron:0.1  
   
 ###Connect to the containers:  
 docker exec -it wordz-api /bin/bash  
