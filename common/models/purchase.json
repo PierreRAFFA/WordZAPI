@@ -1,0 +1,39 @@
+{
+  "name": "purchase",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "creationDate": {
+      "type": "date",
+      "required": true,
+      "defaultFn": "now"
+    },
+    "transactionId": {
+      "type": "string",
+      "required": true
+    },
+    "productId": {
+      "type": "string",
+      "required": true
+    },
+    "store": {
+      "type": "string",
+      "required": true
+    },
+    "response": {
+      "type": "object",
+      "required": true
+    },
+    "userId": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

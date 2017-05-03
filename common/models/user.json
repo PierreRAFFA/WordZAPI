@@ -3,7 +3,7 @@
   "plural": "users",
   "base": "User",
   "properties": {
-    "balance" : {
+    "balance": {
       "type": "number",
       "default": 15
     },
@@ -12,6 +12,7 @@
       "default": {}
     }
   },
+  "validations": [],
   "relations": {
     "accessTokens": {
       "type": "hasMany",

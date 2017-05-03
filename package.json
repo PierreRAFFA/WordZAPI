@@ -26,6 +26,7 @@
     "loopback-connector-mongodb": "^1.18.0",
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
+    "request": "^2.81.0",
     "serve-favicon": "^2.0.1",
     "strong-error-handler": "^1.0.1"
   },
