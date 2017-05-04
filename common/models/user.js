@@ -20,7 +20,14 @@ module.exports = function (User) {
   User.top20 = function (cb) {
 
     const filters = {
+      where: { email: { neq: 'admin@wordz.com' }},
       order: 'ranking',
+      include: {
+        relation: 'identities',
+        scope: {
+          fields: ['profile'],
+        }
+      },
       limit: 20,
     };
 

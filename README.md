@@ -14,17 +14,17 @@ Docker
 ##Docker commands
 
 ###Build and push
-docker build -t pierreraffa/wordz-api:0.2 .  
-docker push pierreraffa/wordz-api:0.2  
-docker pull pierreraffa/wordz-api:0.2
-
+docker build -t pierreraffa/wordz-api:latest .  
+docker push pierreraffa/wordz-api:latest  
+docker pull pierreraffa/wordz-api:latest  
+  
 ###Create containers
 docker pull mongo  
 docker run --name wordz-mongo -d mongo --auth  
 docker run --name wordz-mongo -v /Users/pierre/WORKSPACE/Wordz/WordzAPI/db:/data/db -d mongo  
 docker run --name wordz-mongo -v /wordz/prod/db:/data/db -d mongo
     
-docker run --name wordz-api -p 3010:3010 --link wordz-mongo:mongo -d pierreraffa/wordz-api:0.1  
+docker run --name wordz-api -p 3010:3010 --link wordz-mongo:mongo -d pierreraffa/wordz-api:latest 
 
 docker run --name wordz-cron --link wordz-mongo:mongo -d pierreraffa/wordz-cron:0.1  
   
