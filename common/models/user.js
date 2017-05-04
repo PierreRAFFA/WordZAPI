@@ -16,11 +16,10 @@ module.exports = function (User) {
    * https://loopback.io/doc/en/lb3/Remote-methods.html
    * //Todo: specify the language as a parameter
    */
-  User.top20 = function (cb) {
+  User.top20 = function () {
 
     const filters = {
-      where: { email: { neq: 'admin@wordz.com' }},
-      order: 'ranking',
+      order: 'statistics.en_GB.ranking',
       include: {
         relation: 'identities',
         scope: {
@@ -30,7 +29,16 @@ module.exports = function (User) {
       limit: 20,
     };
 
-    return User.find(filters);
+    return User.find(filters)
+    .filter(user => user.__data.identities.length > 0)
+    .map(user => {
+
+      //Todo: tricky ?
+      //pick only the photos properties, the rest should not be part of the result.
+      user.__data.identities[0].__data.profile = _.pick(user.__data.identities[0].__data.profile, ['photos']);
+
+      return user;
+    })
   };
 
   User.remoteMethod('top20', {
