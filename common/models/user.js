@@ -9,7 +9,6 @@ module.exports = function (User) {
   //   en_GB: app.models.userStatistics,
   //   fr_FR: app.models.userStatistics
   // };
-
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
   /**
@@ -57,40 +56,64 @@ module.exports = function (User) {
   User.purchase = function purchase(userId, receipt, sandbox, options, cb) {
 
     console.log('sandbox:' + sandbox);
+    console.dir(receipt);
     const {Store:store, TransactionID:transactionId, Payload: payload} = receipt;
 
     if (store && transactionId && payload) {
 
       const user = options.currentUser;
 
-      //check if the transaction has been already registered
       const Purchase = User.app.models.Purchase;
-      return Purchase.find({transactionId: transactionId}).then( purchases => {
+      return Purchase
+      .find({ where: { transactionId: transactionId}})
+
+      // 1. check if the transaction has been already registered (for optimization but not secure )
+      .then(purchases => {
         if ( purchases.length === 1){
-          const error = new Error("The receipt has been already used");
-          error.statusCode = 400;
-          return cb(error);
-        }else{
+          throw new Error("The receipt has been already used");
+        }
+      })
 
-          //check if the receipt is valid
-          return verifyAppleReceipt(payload, sandbox).then(storeResponse => {
+      // 2. validate with Apple
+      .then(() => {
+        return verifyAppleReceipt(payload, sandbox);
+      })
 
-            //save purchase and adjust the user
-            if (storeResponse) {
-              const productId = createPurchaseFromAppleReceipt(storeResponse, userId);
-              user.balance += getCoinsFromProductId(productId);
-              return user.save().then(() => {
-                return user;
-              });
+      // 3. Check if the transaction has been already registered (secure)
+      .then(storeSuccessResponse => {
+        if (storeSuccessResponse) {
+          const appleTransactionId = _.get(storeSuccessResponse, 'receipt.in_app[0].transaction_id');
+
+          return Purchase.find({ where: { transactionId: appleTransactionId}}).then( purchases => {
+            if ( purchases.length === 1){
+              throw new Error("The receipt has been already used");
             }else{
-              const error = new Error("The receipt has not been validated by Apple");
-              error.statusCode = 400;
-              return cb(error);
+              return storeSuccessResponse;
             }
           });
+        }else{
+          throw new Error("The receipt has not been validated by Apple");
         }
-      });
+      })
 
+      // 4. save purchase
+      .then(storeSuccessResponse => {
+          return createPurchaseFromAppleReceipt(storeSuccessResponse, userId);
+      })
+
+      // 5. adjust the user
+      .then(purchase => {
+        const update = getUserUpdateFromProductId(purchase.productId);
+        user.balance += update.balance ? update.balance : 0;
+        return user.save().then(() => {
+          return { balance: user.balance };
+        });
+      })
+
+      .catch(err => {
+        err.statusCode = 400;
+        cb(err);
+      });
     }else{
       const error = new Error("The receipt is not valid");
       error.statusCode = 400;
@@ -109,13 +132,13 @@ module.exports = function (User) {
       {arg: 'sandbox', type: 'boolean', required: false},
       {arg: "options", type: "object", http: "optionsFromRequest"}
     ],
-    returns: { arg: "purchase", type: "array"}
+    returns: { arg: "purchase", type: "object"}
   });
 
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
   /**
-   *
+   * Call Apple endpoint to check receipt validity
    * @param payload
    * @param sandbox
    * @returns {*}
@@ -140,7 +163,14 @@ module.exports = function (User) {
       console.log('Response:', body);
 
       if ('status' in body && body.status === 0) {
-        defer.resolve(body);
+
+        //ignore valid receipts used for other bundles
+        const bundleId =  _.get(body, 'receipt.bundle_id');
+        if (bundleId && bundleId === 'com.wordz.game') {
+          defer.resolve(body);
+        }else{
+          defer.resolve(null);
+        }
       }else{
         defer.resolve(null);
       }
@@ -156,6 +186,10 @@ module.exports = function (User) {
    */
   function createPurchaseFromAppleReceipt(storeResponse, userId){
 
+    console.log('==============================');
+    console.log('createPurchaseFromAppleReceipt');
+    console.log(userId);
+    console.dir(storeResponse);
     if (storeResponse.receipt
       && storeResponse.receipt.in_app
       && storeResponse.receipt.in_app.length) {
@@ -170,24 +204,25 @@ module.exports = function (User) {
       purchase.userId = userId;
       purchase.store = 'apple';
 
-      purchase.save();
-      return inApp.product_id;
+      console.dir(purchase);
+      console.log('==============================');
+      return purchase.save();
     }
   }
 
 
-  function getCoinsFromProductId(productId) {
+  function getUserUpdateFromProductId(productId) {
     switch(productId) {
       case 'com.wordz.game.coin1':
-        return 16;
+        return { balance: 8 };
       case 'com.wordz.game.coin2':
-        return 36;
+        return { balance: 18 };
       case 'com.wordz.game.coin3':
-        return 95;
+        return { balance: 48 };
       case 'com.wordz.game.coin4':
-        return 200;
+        return { balance: 100 };
       case 'com.wordz.game.coin5':
-        return 420;
+        return { balance: 210 };
     }
   }
 
