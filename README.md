@@ -20,14 +20,11 @@ docker pull pierreraffa/wordz-api:latest
   
 ###Create containers
 docker pull mongo  
-docker run --name wordz-mongo -d mongo --auth  
-docker run --name wordz-mongo -v /Users/pierre/WORKSPACE/Wordz/WordzAPI/db:/data/db -d mongo  
-docker run --name wordz-mongo -v /wordz/prod/db:/data/db -d mongo
-    
-docker run --name wordz-api -p 3010:3010 --link wordz-mongo:mongo -d pierreraffa/wordz-api:latest 
+docker run --name wordz-api-mongo -p 27017:27017 -v /wordz-api-mongo/db:/data/db -d mongo
+( docker run --name wordz-mongo -d mongo --auth)  
+( docker run --name wordz-mongo -v /Users/pierre/WORKSPACE/Wordz/WordzAPI/db:/data/db -d mongo )  
+docker run --name wordz-api -p 3010:3010 --link wordz-api-mongo:mongo --link wordz-purchase:wordz-purchase -d pierreraffa/wordz-api:latest 
 
-docker run --name wordz-cron --link wordz-mongo:mongo -d pierreraffa/wordz-cron:0.1  
-  
 ###Connect to the containers:  
 docker exec -it wordz-api /bin/bash  
 docker exec -it wordz-mongo /bin/bash  
