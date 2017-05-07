@@ -56,9 +56,5 @@
   "userStatistics": {
     "dataSource": "db",
     "public": false
-  },
-  "purchase": {
-    "dataSource": "db",
-    "public": true
   }
 }

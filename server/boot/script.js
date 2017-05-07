@@ -9,7 +9,7 @@ module.exports = function(app) {
     User.find({ where: { username: 'Admin' }}, function(err, user) {
        if (user.length === 0) {
            User.create([
-               {username: 'Admin', email: 'admin@wordz.com', password: 'Test123'},
+               {username: 'Admin', email: 'admin@wordz.com', password: 'e/+7Pn2`,d6Jup<[T?X97gG69Xu[+n)'},
            ], function(err, users) {
                if (err) throw err;
 

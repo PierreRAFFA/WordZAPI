@@ -3,6 +3,8 @@
 const _ = require('lodash');
 const request = require('request');
 
+const config = require('../../config');
+
 module.exports = function (User) {
 
   // var Languages = {
@@ -61,72 +63,33 @@ module.exports = function (User) {
    * @param options
    * @param cb
    */
-  User.purchase = function purchase(userId, receipt, sandbox, options, cb) {
+  User.purchase = function purchase(userId, productId, receipt, sandbox, options, cb) {
 
-    console.log('sandbox:' + sandbox);
-    console.dir(receipt);
+    const user = options.currentUser;
+
+    const url = 'http://' + config.services.wordzPurchase + '/api/purchases';
+
     const {Store:store, TransactionID:transactionId, Payload: payload} = receipt;
 
-    if (store && transactionId && payload) {
+    const formFields = {
+      userId,
+      productId,
+      store,
+      sandbox,
+      transactionId,
+      payload
+    };
 
-      const user = options.currentUser;
-
-      const Purchase = User.app.models.Purchase;
-      return Purchase
-      .find({ where: { transactionId: transactionId}})
-
-      // 1. check if the transaction has been already registered (for optimization but not secure )
-      .then(purchases => {
-        if ( purchases.length === 1){
-          throw new Error("The receipt has been already used");
-        }
-      })
-
-      // 2. validate with Apple
-      .then(() => {
-        return verifyAppleReceipt(payload, sandbox);
-      })
-
-      // 3. Check if the transaction has been already registered (secure)
-      .then(storeSuccessResponse => {
-        if (storeSuccessResponse) {
-          const appleTransactionId = _.get(storeSuccessResponse, 'receipt.in_app[0].transaction_id');
-
-          return Purchase.find({ where: { transactionId: appleTransactionId}}).then( purchases => {
-            if ( purchases.length === 1){
-              throw new Error("The receipt has been already used");
-            }else{
-              return storeSuccessResponse;
-            }
-          });
-        }else{
-          throw new Error("The receipt has not been validated by Apple");
-        }
-      })
-
-      // 4. save purchase
-      .then(storeSuccessResponse => {
-          return createPurchaseFromAppleReceipt(storeSuccessResponse, userId);
-      })
-
-      // 5. adjust the user
-      .then(purchase => {
-        const update = getUserUpdateFromProductId(purchase.productId);
-        user.balance += update.balance ? update.balance : 0;
+    request.post({url: url, json: formFields}, (err, res, body) => {
+      if (res.statusCode !== 200) {
+        cb(body.error);
+      }else{
+        user.balance += body.update && body.update.balance ? body.update.balance : 0;
         return user.save().then(() => {
-          return { balance: user.balance };
+          cb(null, { balance: user.balance });
         });
-      })
-
-      .catch(err => {
-        err.statusCode = 400;
-        cb(err);
-      });
-    }else{
-      const error = new Error("The receipt is not valid");
-      error.statusCode = 400;
-      return cb(error);
-    }
+      }
+    });
   };
 
   User.remoteMethod('purchase', {
@@ -136,6 +99,7 @@ module.exports = function (User) {
     },
     accepts: [
       {arg: 'id', type: 'string', required: true},
+      {arg: 'productId', type: 'string', required: true},
       {arg: 'receipt', type: 'object', required: true},
       {arg: 'sandbox', type: 'boolean', required: false},
       {arg: "options", type: "object", http: "optionsFromRequest"}
