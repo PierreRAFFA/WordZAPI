@@ -5,7 +5,7 @@
     "host": "mongo",
     "port": 27017,
     "url": "",
-    "database": "wordz-dev1",
+    "database": "wordz-api",
     "user": "",
     "password": ""
   }

@@ -21,6 +21,7 @@ module.exports = function (User) {
   User.top20 = function () {
 
     const filters = {
+      where: {'statistics.en_GB.ranking': { neq: null }},
       order: 'statistics.en_GB.ranking',
       include: {
         relation: 'identities',
