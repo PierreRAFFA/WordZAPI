@@ -7,7 +7,7 @@
     "host": "127.0.0.1",
     "port": 27017,
     "url": "",
-    "database": "wordz-dev1",
+    "database": "wordz-api-dev",
     "password": "",
     "name": "db",
     "connector": "mongodb",

@@ -6,7 +6,7 @@
     "port": 27017,
     "url": "",
     "database": "wordz-api",
-    "user": "",
-    "password": ""
+    "user": "api",
+    "password": "bEwBcTHpCvePe%28.vcMAXr2R.s%2C"
   }
 }
