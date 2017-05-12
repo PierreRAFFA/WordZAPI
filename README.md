@@ -22,8 +22,8 @@ $ docker pull pierreraffa/wordz-api:latest
 ```
 #### Create containers
 ```sh
-$ docker run --name wordz-api-mongo -p 27017:27017 -v /opt/wordz-api-mongo/db:/data/db -d mongo
-$ docker exec -it wordz-purchase-mongo mongo admin  
+$ docker run --name wordz-api-mongo -p 27017:27017 -v /opt/wordz-api-mongo/db:/data/db -d mongo --auth 
+$ docker exec -it wordz-api-mongo mongo admin  
   > db.createUser({ user: "admin", pwd: "password", roles:["root"]})  
   > db.auth("admin","password")  
   > use wordz-api  

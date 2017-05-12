@@ -2,11 +2,11 @@
   "db": {
     "name": "db",
     "connector": "mongodb",
-    "host": "127.0.0.1",
+    "host": "mongo",
     "port": 27017,
     "url": "",
-    "database": "wordz-api-dev",
-    "user": "",
-    "password": ""
+    "database": "wordz-api",
+    "user": "api",
+    "password": "password"
   }
 }

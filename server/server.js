@@ -3,7 +3,13 @@
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
 'use strict';
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'local';
+
+console.log('=================');
 console.log('NODE_ENV:' + process.env.NODE_ENV);
+console.log('=================');
+
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
