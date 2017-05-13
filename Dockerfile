@@ -1,15 +1,15 @@
 FROM node:boron
 
 # Create app directory
-RUN mkdir -p /var/www/wordz-api
-WORKDIR /var/www/wordz-api
+RUN mkdir -p /var/app
+WORKDIR /var/app
 
 # Install app dependencies
-COPY package.json /var/www/wordz-api
+COPY package.json /var/app
 RUN npm install
 
 # Bundle app source
-COPY . /var/www/wordz-api
+COPY . /var/app
 
 EXPOSE 3010
 

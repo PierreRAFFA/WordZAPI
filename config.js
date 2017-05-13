@@ -1,11 +1,12 @@
 switch(process.env.NODE_ENV) {
-  case 'development':
+  case 'local':
   default:
-    wordzPurchase = '0.0.0.0:3020';
+    wordzPurchase = '0.0.0.0:3010';
     break;
 
+  case 'development':
   case 'production':
-    wordzPurchase = 'wordz-purchase:3020';
+    wordzPurchase = 'wordz-purchase:3010';
     break;
 }
 
