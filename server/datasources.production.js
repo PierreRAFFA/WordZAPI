@@ -1,4 +1,4 @@
-{
+module.exports = {
   "db": {
     "name": "db",
     "connector": "mongodb",
@@ -7,6 +7,6 @@
     "url": "",
     "database": "api",
     "user": "api",
-    "password": "password"
+    "password": process.env.MONGO_API_PASSWORD
   }
 }

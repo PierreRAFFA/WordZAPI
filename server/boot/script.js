@@ -10,8 +10,9 @@ module.exports = function (app) {
     if (err) {
       console.error(err);
     }else if (user.length === 0) {
+      console.log('create admin with password:' + process.env.API_ADMIN_PASSWORD);
       User.create([
-        { username: 'Admin', email: 'admin@wordz.com', password: 'e/+7Pn2`,d6Jup<[T?X97gG69Xu[+n)' },
+        { username: 'Admin', email: 'admin@wordz.com', password: process.env.API_ADMIN_PASSWORD },
       ], function (err, users) {
         if (err) {
           throw err;

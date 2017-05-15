@@ -2,7 +2,7 @@ module.exports = function (app, passport) {
 
   const User = app.models.user;
   const UserIdentity = app.models.userIdentity;
-  const defaultPassword = 'RTY-U39,30(§!fj-HD,JHJ-)*%DFJJhd-fhgdh,gf§5-D§5§6,-589Fj-hdjfd';
+  const defaultPassword = process.env.API_FACEBOOK_USER_PASSWORD;
 
   app.post('/auth/facebook/token',
     passport.authenticate('facebook-token'),
