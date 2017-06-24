@@ -6,11 +6,15 @@ module.exports = function(app) {
   });
 
   // Returns the app version
-  app.get('/api/app/version', function(req, res) {
-    const major = 1;
+  app.get('/api/app/settings', function(req, res) {
+    const major = 0;
     const minor = 0;
-    const patch = 0;
+    const patch = 3;
     const version = major + '.' + minor + '.' + patch;
-    res.send({version, major, minor, patch});
+    const store = {
+      apple: 'itms-apps:itunes.apple.com/app/wordz/id1208567317'
+    };
+
+    res.send({version, major, minor, patch, store});
   });
 }
