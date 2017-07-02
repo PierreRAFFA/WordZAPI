@@ -15,6 +15,11 @@ module.exports = function(app) {
       apple: 'itms-apps:itunes.apple.com/app/wordz/id1208567317'
     };
 
-    res.send({version, major, minor, patch, store});
+    const maintenance = {
+      enable: false,
+      message: 'Sorry, WordZ is down for maintenance for several minutes'
+    };
+
+    res.send({version, major, minor, patch, store, maintenance});
   });
 }
