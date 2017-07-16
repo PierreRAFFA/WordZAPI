@@ -48,6 +48,13 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "top20"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "top100"
     }
   ],
   "methods": {}

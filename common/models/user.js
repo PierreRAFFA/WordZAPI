@@ -18,6 +18,14 @@ module.exports = function (User) {
    * https://loopback.io/doc/en/lb3/Remote-methods.html
    * //Todo: specify the language as a parameter
    */
+  User.remoteMethod('top20', {
+    http: {
+      path: '/top20',
+      verb: 'get'
+    },
+    returns: { type: 'array', root: true }
+  });
+
   User.top20 = function () {
 
     const filters = {
@@ -44,13 +52,45 @@ module.exports = function (User) {
     })
   };
 
-  User.remoteMethod('top20', {
+  /**
+   * Returns the top20
+   * https://loopback.io/doc/en/lb3/Remote-methods.html
+   * //Todo: specify the language as a parameter
+   */
+  User.remoteMethod('top100', {
     http: {
-      path: '/top20',
+      path: '/top100',
       verb: 'get'
     },
-    returns: { arg: 'top20', type: 'array' }
+    returns: { type: 'array', root: true }
   });
+
+  User.top100 = function () {
+
+    const filters = {
+      where: {'statistics.en_GB.ranking': { neq: null }},
+      order: 'statistics.en_GB.ranking',
+      include: {
+        relation: 'identities',
+        scope: {
+          fields: ['profile'],
+        }
+      },
+      limit: 100,
+    };
+
+    return User.find(filters)
+    .filter(user => user.__data.identities.length > 0)
+    .map(user => {
+
+      //Todo: tricky ?
+      //pick only the photos properties, the rest should not be part of the result.
+      user.__data.identities[0].__data.profile = _.pick(user.__data.identities[0].__data.profile, ['photos']);
+
+      return user;
+    })
+  };
+
   ///////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////
   /**
