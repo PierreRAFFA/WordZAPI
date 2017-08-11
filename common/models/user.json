@@ -3,6 +3,9 @@
   "plural": "users",
   "base": "User",
   "properties": {
+    "firebaseToken": {
+      "type": "string"
+    },
     "balance": {
       "type": "number",
       "default": 5
@@ -33,6 +36,12 @@
       "type": "hasMany",
       "model": "game",
       "foreignKey": "userId"
+    },
+    "roles": {
+      "type": "hasMany",
+      "model": "Role",
+      "foreignKey": "principalId",
+      "through": "RoleMapping"
     }
   },
   "acls": [

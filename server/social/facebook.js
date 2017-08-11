@@ -25,6 +25,14 @@ module.exports = function (app, passport) {
           if (error) {
             res.send(500);
           } else {
+
+            //save firebase token if exists
+            if ('firebase_token' in req.user) {
+              req.user.firebaseToken = req.body.firebase_token;
+              req.user.save();
+            }
+
+            //return the user profile
             result.profile = userIndentities[0].profile;
 
             res.setHeader('Content-Type', 'application/json');

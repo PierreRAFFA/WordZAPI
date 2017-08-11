@@ -1,9 +1,17 @@
-// {"email":"admin@wordz.com", "password":"Test123"}
+// {"email":"admin@wordz.com", "password":"password"}
 // {"email":"643152695835881@loopback.facebook.com", "password":"Test123"}
 module.exports = function (app) {
   var User = app.models.user;
   var Role = app.models.Role;
   var RoleMapping = app.models.RoleMapping;
+
+  RoleMapping.belongsTo(User);
+  User.hasMany(RoleMapping, {foreignKey: 'principalId'});
+  Role.hasMany(User, {through: RoleMapping, foreignKey: 'roleId'});
+
+  // User.deleteAll();
+  // Role.deleteAll();
+  // return;
 
   User.find({ where: { username: 'Admin' } }, function (err, user) {
 
