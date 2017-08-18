@@ -4,7 +4,7 @@ module.exports = function (app, passport) {
   const UserIdentity = app.models.userIdentity;
   const defaultPassword = process.env.API_FACEBOOK_USER_PASSWORD;
 
-  app.post('/auth/facebook/token',
+  app.post('/facebook/token',
     passport.authenticate('facebook-token'),
     function (req, res) {
       console.log(req.body);
@@ -20,14 +20,17 @@ module.exports = function (app, passport) {
           where: { userId: req.user.id }
         };
 
+        console.log('get identity');
         //get the user social profile
         UserIdentity.find(filters , function (error, userIndentities) {
           if (error) {
             res.send(500);
           } else {
+            console.log('identity received');
+            console.log(req.user);
 
             //save firebase token if exists
-            if ('firebase_token' in req.user) {
+            if ('firebase_token' in req.body) {
               req.user.firebaseToken = req.body.firebase_token;
               req.user.save();
             }

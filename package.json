@@ -1,5 +1,5 @@
 {
-  "name": "WordzAPI",
+  "name": "WordzAuthentication",
   "version": "0.3.6",
   "main": "server/server.js",
   "scripts": {

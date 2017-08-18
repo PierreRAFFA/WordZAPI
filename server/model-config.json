@@ -47,7 +47,7 @@
   },
   "game": {
     "dataSource": "db",
-    "public": true
+    "public": false
   },
   "gameStatistics": {
     "dataSource": "db",

@@ -8,7 +8,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'local';
 
 console.log('=================');
 console.log('NODE_ENV:' + process.env.NODE_ENV);
-console.log('JWT_SECRET:' + process.env.JWT_SECRET);
+console.log('=================');
 console.log('=================');
 
 
@@ -70,6 +70,7 @@ app.middleware('parse', bodyParser.urlencoded({
 // The access token is only available after boot
 app.middleware('auth', loopback.token({
   model: app.models.accessToken,
+  currentUserLiteral: 'me'
 }));
 
 app.middleware('session:before', cookieParser(app.get('cookieSecret')));
