@@ -1,9 +1,7 @@
-// {"email":"admin@wordz.com", "password":"password"}
-// {"email":"643152695835881@loopback.facebook.com", "password":"Test123"}
 module.exports = function (app) {
-  var User = app.models.user;
-  var Role = app.models.Role;
-  var RoleMapping = app.models.RoleMapping;
+  const User = app.models.user;
+  const Role = app.models.Role;
+  const RoleMapping = app.models.RoleMapping;
 
   RoleMapping.belongsTo(User);
   User.hasMany(RoleMapping, {foreignKey: 'principalId'});
@@ -11,7 +9,7 @@ module.exports = function (app) {
 
   // User.deleteAll();
   // Role.deleteAll();
-  // return;
+  // return;const
 
   User.find({ where: { username: 'Admin' } }, function (err, user) {
 

@@ -1,3 +1,7 @@
+const assign = require('lodash/assign');
+const map = require('lodash/map');
+const omit = require('lodash/omit');
+
 module.exports = function (app, passport) {
 
   const User = app.models.user;
@@ -11,37 +15,23 @@ module.exports = function (app, passport) {
 
       if (req.user) {
 
+        //save firebase token if exists
+        if ('firebase_token' in req.body) {
+          req.user.firebaseToken = req.body.firebase_token;
+          req.user.save();
+        }
+
         //set the default result
         var result = req.user;
+        return req.user.identities.getAsync().then(identities => {
 
-        const UserIdentity = app.models.userIdentity;
-
-        const filters = {
-          where: { userId: req.user.id }
-        };
-
-        console.log('get identity');
-        //get the user social profile
-        UserIdentity.find(filters , function (error, userIndentities) {
-          if (error) {
-            res.send(500);
-          } else {
-            console.log('identity received');
-            console.log(req.user);
-
-            //save firebase token if exists
-            if ('firebase_token' in req.body) {
-              req.user.firebaseToken = req.body.firebase_token;
-              req.user.save();
-            }
-
-            //return the user profile
-            result.profile = userIndentities[0].profile;
-
-            res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(result));
-            res.end();
-          }
+          let identitiesJSON = JSON.parse(JSON.stringify(identities));
+          result = assign({}, JSON.parse(JSON.stringify(result)), {
+            identities: identitiesJSON
+          });
+          res.setHeader('Content-Type', 'application/json');
+          res.write(JSON.stringify(result));
+          res.end();
         });
       } else {
         res.send(401);

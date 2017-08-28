@@ -26,7 +26,7 @@ module.exports = function (User) {
   User.disableRemoteMethodByName('prototype.verify');
 
   User.disableRemoteMethodByName('create');
-  // User.disableRemoteMethodByName('findById');
+  User.disableRemoteMethodByName('findById');
   User.disableRemoteMethodByName('find');
   User.disableRemoteMethodByName('upsert');
   // User.disableRemoteMethodByName('updateAll');
@@ -83,6 +83,7 @@ module.exports = function (User) {
       })
       .then(user => {
         return user.roles.getAsync().then(roles => {
+          console.log(roles);
           return roles;
         });
       })
@@ -108,6 +109,54 @@ module.exports = function (User) {
   ////////////////////////////////////////// READ
   User.remoteMethod('read', {
     http: {
+      path: '/:id',
+      verb: 'get'
+    },
+    accepts: [
+      {"arg": "id", "type": "string"},
+      {"arg": "options", "type": "object", "http": "optionsFromRequest"}
+    ],
+    returns: { arg:'user', type: User, root: true }
+  });
+
+  User.read = function (id, options) {
+    //is it me ?
+    const currentUserId = get(options, 'currentUser.id');
+    const isMe = currentUserId.toString() === id;
+    console.log('isMe:'  + isMe);
+
+    const restrictedFields = {
+      balance: false,
+    };
+
+    let include = [{
+      relation: 'identities',
+      scope: {
+        fields: ['profile'],
+      },
+    }];
+
+    if (isMe) {
+      include.push({ relation: 'roles' });
+    }
+
+    const filters = {
+      where : { id },
+      fields: isMe ? {} : restrictedFields,
+      include,
+    };
+
+    return User.findOne(filters).then(user => {
+      if (isMe === false) {
+        user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
+      }
+      return user;
+    });
+  };;
+
+  ////////////////////////////////////////// READ ALL
+  User.remoteMethod('readAll', {
+    http: {
       path: '/',
       verb: 'get'
     },
@@ -118,7 +167,7 @@ module.exports = function (User) {
     returns: { arg:'user', type: [User], root: true }
   });
 
-  User.read = function (filters, options) {
+  User.readAll = function (filters, options) {
     console.log('read');
     console.log(filters);
     console.log(options);
@@ -149,6 +198,7 @@ module.exports = function (User) {
 
     if (isMe === false) {
       users = users.map(user => {
+
         user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
         // delete user.__data.identities[0].__data.userId;
         return user;
@@ -159,7 +209,8 @@ module.exports = function (User) {
 
   ////////////////////////////////////////// CONSUME GAME
   /**
-   * Returns the top20
+   * Consumes one game and update the user statistics
+   *
    * https://loopback.io/doc/en/lb3/Remote-methods.html
    * //Todo: specify the language as a parameter
    */
@@ -215,86 +266,6 @@ module.exports = function (User) {
         cb(null, user);
       });
     });
-  };
-
-  ////////////////////////////////////////// TOP20
-  /**
-   * Returns the top20
-   * https://loopback.io/doc/en/lb3/Remote-methods.html
-   * //Todo: specify the language as a parameter
-   */
-  User.remoteMethod('top20', {
-    http: {
-      path: '/top20',
-      verb: 'get'
-    },
-    returns: { type: 'array', root: true }
-  });
-
-  User.top20 = function () {
-
-    const filters = {
-      where: {'statistics.en_GB.ranking': { neq: null }},
-      order: 'statistics.en_GB.ranking',
-      include: {
-        relation: 'identities',
-        scope: {
-          fields: ['profile'],
-        }
-      },
-      limit: 20,
-    };
-
-    return User.find(filters)
-    .filter(user => user.__data.identities.length > 0)
-    .map(user => {
-
-      //Todo: tricky ?
-      //pick only the photos properties, the rest should not be part of the result.
-      user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
-
-      return user;
-    })
-  };
-
-  ////////////////////////////////////////// TOP100
-  /**
-   * Returns the top20
-   * https://loopback.io/doc/en/lb3/Remote-methods.html
-   * //Todo: specify the language as a parameter
-   */
-  User.remoteMethod('top100', {
-    http: {
-      path: '/top100',
-      verb: 'get'
-    },
-    returns: { type: 'array', root: true }
-  });
-
-  User.top100 = function () {
-
-    const filters = {
-      where: {'statistics.en_GB.ranking': { neq: null }},
-      order: 'statistics.en_GB.ranking',
-      include: {
-        relation: 'identities',
-        scope: {
-          fields: ['profile'],
-        }
-      },
-      limit: 100,
-    };
-
-    return User.find(filters)
-      .filter(user => user.__data.identities.length > 0)
-      .map(user => {
-
-        //Todo: tricky ?
-        //pick only the photos properties, the rest should not be part of the result.
-        user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
-
-        return user;
-      })
   };
 
   ///////////////////////////////////////////////////////////////////////////
