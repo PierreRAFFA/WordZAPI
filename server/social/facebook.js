@@ -32,13 +32,13 @@ module.exports = function (app, passport) {
           if (error) {
             res.status(500).send({statusCode: 500, message: 'No Profile Found'});
           } else {
-            console.log(req.user);
-
-            //return the user profile
-            result.profile = userIdentities[0].profile;
+            //return the user profile with identities
+            const userJson = assign({}, JSON.parse(JSON.stringify(req.user)), {
+              identities: JSON.parse(JSON.stringify(userIdentities))
+            });
 
             res.setHeader('Content-Type', 'application/json');
-            res.write(JSON.stringify(result));
+            res.write(JSON.stringify(userJson));
             res.end();
           }
         });
