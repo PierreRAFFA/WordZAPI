@@ -23,18 +23,27 @@ module.exports = function (app, passport) {
 
         //set the default result
         var result = req.user;
-        return req.user.identities.getAsync().then(identities => {
 
-          let identitiesJSON = JSON.parse(JSON.stringify(identities));
-          result = assign({}, JSON.parse(JSON.stringify(result)), {
-            identities: identitiesJSON
-          });
-          res.setHeader('Content-Type', 'application/json');
-          res.write(JSON.stringify(result));
-          res.end();
+        const filters = {
+          where: { userId: req.user.id }
+        };
+
+        UserIdentity.find(filters , function (error, userIdentities) {
+          if (error) {
+            res.status(500).send({statusCode: 500, message: 'No Profile Found'});
+          } else {
+            console.log(req.user);
+
+            //return the user profile
+            result.profile = userIdentities[0].profile;
+
+            res.setHeader('Content-Type', 'application/json');
+            res.write(JSON.stringify(result));
+            res.end();
+          }
         });
       } else {
-        res.send(401);
+        res.status(401).send({statusCode: 401, message: 'Authorization Required'});
       }
     }
   );
