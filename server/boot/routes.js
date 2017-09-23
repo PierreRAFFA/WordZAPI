@@ -43,7 +43,7 @@ module.exports = function(app) {
   // ///////////////////////////////////////////////////////////////  GET
   // app.get('/api/v:version/service-:service/(*)', authenticateUser, (req, res) => {
   //   console.log(req.user);
-  //   const host = `wordz-${req.params.service}`;
+  //   const host = `lexio-${req.params.service}`;
   //
   //   let options = {
   //     url: `http://${host}:3010/api/${req.params['0']}`,
@@ -75,7 +75,7 @@ module.exports = function(app) {
   // ///////////////////////////////////////////////////////////////  POST
   // app.post('/api/v:version/service-:service/(*)', authenticateUser, (req, res) => {
   //   console.log(req.body);
-  //   const host = `wordz-${req.params.service}`;
+  //   const host = `lexio-${req.params.service}`;
   //
   //   let options = {
   //     url: `http://${host}:3010/api/${req.params['0']}`,

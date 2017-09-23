@@ -83,7 +83,6 @@ module.exports = function (User) {
       })
       .then(user => {
         return user.roles.getAsync().then(roles => {
-          console.log(roles);
           return roles;
         });
       })
@@ -122,7 +121,8 @@ module.exports = function (User) {
   User.read = function (id, options) {
     //is it me ?
     const currentUserId = get(options, 'currentUser.id');
-    const isMe = currentUserId.toString() === id;
+    const isMe = !!currentUserId && currentUserId.toString() === id;
+    console.log('id:'  + id);
     console.log('isMe:'  + isMe);
 
     const restrictedFields = {
@@ -147,12 +147,16 @@ module.exports = function (User) {
     };
 
     return User.findOne(filters).then(user => {
-      if (isMe === false) {
-        user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
+      if (!user) {
+        user = {}; // accesstoken from a removed user
+      }else{
+        if (isMe === false) {
+          user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
+        }
       }
       return user;
     });
-  };;
+  };
 
   ////////////////////////////////////////// READ ALL
   User.remoteMethod('readAll', {
@@ -169,8 +173,6 @@ module.exports = function (User) {
 
   User.readAll = function (filters, options) {
     console.log('read');
-    console.log(filters);
-    console.log(options);
 
     //is it me ?
     const currentUserId = get(options, 'currentUser.id');
@@ -194,7 +196,6 @@ module.exports = function (User) {
     //get users
     let users = User.find(filters)
       .filter(user => user.__data.identities.length > 0);
-
 
     if (isMe === false) {
       users = users.map(user => {
@@ -229,7 +230,6 @@ module.exports = function (User) {
 
   User.consumeGame = function (id, game, options, cb) {
     console.log(id);
-    console.log(game);
 
     User.findById(id).then(user => {
       let languageStatistics;

@@ -9,7 +9,7 @@ module.exports = function (app) {
 
   // User.deleteAll();
   // Role.deleteAll();
-  // return;const
+  // return
 
   User.find({ where: { username: 'Admin' } }, function (err, user) {
 
@@ -18,7 +18,7 @@ module.exports = function (app) {
     }else if (user.length === 0) {
       console.log('create admin with password:' + process.env.API_ADMIN_PASSWORD);
       User.create([
-        { username: 'Admin', email: 'admin@wordz.com', password: process.env.API_ADMIN_PASSWORD },
+        { username: 'Admin', email: 'admin@lexiogame.com', password: process.env.API_ADMIN_PASSWORD },
       ], function (err, users) {
         if (err) {
           throw err;

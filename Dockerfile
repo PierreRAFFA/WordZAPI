@@ -6,7 +6,7 @@ WORKDIR /var/app
 
 # Install app dependencies
 COPY package.json /var/app
-RUN npm install
+RUN npm install --quiet
 
 # Bundle app source
 COPY . /var/app

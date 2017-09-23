@@ -1,5 +1,5 @@
 {
-  "name": "WordzAuthentication",
+  "name": "LexioAuthentication",
   "version": "0.4.3",
   "main": "server/server.js",
   "scripts": {
@@ -42,5 +42,5 @@
     "url": ""
   },
   "license": "UNLICENSED",
-  "description": "WordzAPI"
+  "description": "Lexio Authentication"
 }

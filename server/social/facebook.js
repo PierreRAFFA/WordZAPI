@@ -90,7 +90,7 @@ module.exports = function (app, passport) {
     var profileEmail = profile.emails && profile.emails[0] &&
       profile.emails[0].value;
     var generatedEmail = (profile.username || profile.id) + '@' +
-      (profile.provider || provider) + 'wordz.com';
+      (profile.provider || provider) + 'lexiogame.com';
     var email = provider === 'ldap' ? profileEmail : generatedEmail;
     var username = profile.name.givenName + ' ' + profile.name.familyName.substr(0,1) + '.';
     var password = defaultPassword;
