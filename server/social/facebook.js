@@ -15,6 +15,12 @@ module.exports = function (app, passport) {
 
       if (req.user) {
 
+        //set created date if new user
+        if ('created' in req.user === false) {
+          req.user.created = new Date();
+          req.user.save();
+        }
+
         //save firebase token if exists
         if ('firebase_token' in req.body) {
           req.user.firebaseToken = req.body.firebase_token;

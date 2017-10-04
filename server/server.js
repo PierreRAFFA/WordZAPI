@@ -9,7 +9,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'local';
 console.log('=================');
 console.log('NODE_ENV:' + process.env.NODE_ENV);
 console.log('=================');
-console.log('=================');
 
 
 var loopback = require('loopback');

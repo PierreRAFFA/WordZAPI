@@ -13,6 +13,9 @@
     "statistics": {
       "type": "Object",
       "default": {}
+    },
+    "created": {
+      "type": "date"
     }
   },
   "validations": [],

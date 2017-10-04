@@ -87,7 +87,7 @@ module.exports = function (User) {
         });
       })
       .then(roles => {
-        data.roles = roles;
+        data.roles = map(roles, role => role.name);
       })
       // .then(user => {
       //   return omit(user, ['balance', 'statistics']);
