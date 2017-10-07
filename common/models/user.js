@@ -87,6 +87,7 @@ module.exports = function (User) {
         });
       })
       .then(roles => {
+        //roles contains only the role name
         data.roles = map(roles, role => role.name);
       })
       // .then(user => {
@@ -152,6 +153,9 @@ module.exports = function (User) {
       }else{
         if (isMe === false) {
           user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
+        }else{
+          //roles contains just the role name
+          user.__data.roles = map(user.__data.roles, role => role.name);
         }
       }
       return user;
