@@ -5,6 +5,8 @@ const omit = require('lodash/omit');
 module.exports = function (app, passport) {
 
   const User = app.models.user;
+  const Role = app.models.Role;
+  const RoleMapping = app.models.RoleMapping;
   const UserIdentity = app.models.userIdentity;
   const defaultPassword = process.env.API_FACEBOOK_USER_PASSWORD;
 
@@ -15,10 +17,28 @@ module.exports = function (app, passport) {
 
       if (req.user) {
 
-        //set created date if new user
-        if ('created' in req.user === false) {
+        //set created date and role to 'player' if new user
+        if (!req.user.created) {
           req.user.created = new Date();
           req.user.save();
+
+          console.log('this is a new player !!!');
+          Role.find({where: {name: 'player'}}, function(err, roles) {
+            if (err) {
+              return console.log(err);
+            }else if(roles.length === 1) {
+              RoleMapping.create({
+                principalType: "USER",
+                principalId: req.user.id,
+                roleId: roles[0].id
+              }, function(err, roleMapping) {
+                if (err) {return console.log(err);}
+                console.log('User assigned RoleID "player"');
+              });
+            }
+          });
+
+
         }
 
         //save firebase token if exists
@@ -26,9 +46,6 @@ module.exports = function (app, passport) {
           req.user.firebaseToken = req.body.firebase_token;
           req.user.save();
         }
-
-        //set the default result
-        var result = req.user;
 
         const filters = {
           where: { userId: req.user.id }

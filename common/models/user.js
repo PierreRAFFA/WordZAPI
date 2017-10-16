@@ -90,19 +90,21 @@ module.exports = function (User) {
         //roles contains only the role name
         data.roles = map(roles, role => role.name);
       })
-      // .then(user => {
-      //   return omit(user, ['balance', 'statistics']);
-      // })
       .then(() => {
-        const userJson = JSON.parse(JSON.stringify(data.user));
-        userJson.roles = data.roles;
-
-        return {
-          jwt: 'Bearer ' + jwt.sign(userJson, process.env.JWT_SECRET, {
-            expiresIn: 1440 // expires in 24 hours
-          }),
-          accessToken: data.accessToken
-        };
+        if (data.user.username === 'Guest') {
+          return {
+            accessToken: data.accessToken
+          };
+        }else{
+          const userJson = JSON.parse(JSON.stringify(data.user));
+          userJson.roles = data.roles;
+          return {
+            jwt: 'Bearer ' + jwt.sign(userJson, process.env.JWT_SECRET, {
+              expiresIn: 1440 // expires in 24 hours
+            }),
+            accessToken: data.accessToken
+          };
+        }
       });
   };
 
