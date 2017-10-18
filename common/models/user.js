@@ -105,7 +105,7 @@ module.exports = function (User) {
             accessToken: data.accessToken
           };
         }
-      });
+      })
   };
 
   ////////////////////////////////////////// READ
@@ -125,8 +125,6 @@ module.exports = function (User) {
     //is it me ?
     const currentUserId = get(options, 'currentUser.id');
     const isMe = !!currentUserId && currentUserId.toString() === id;
-    console.log('id:'  + id);
-    console.log('isMe:'  + isMe);
 
     const restrictedFields = {
       balance: false,
@@ -178,12 +176,9 @@ module.exports = function (User) {
   });
 
   User.readAll = function (filters, options) {
-    console.log('read');
-
     //is it me ?
     const currentUserId = get(options, 'currentUser.id');
     const isMe = currentUserId.toString() === get(filters, 'where.id');
-    console.log('isMe:'  + isMe);
 
     const restrictedFields = {
       balance: false,
@@ -205,10 +200,13 @@ module.exports = function (User) {
 
     if (isMe === false) {
       users = users.map(user => {
-
-        user.__data.identities[0].__data.profile = pick(user.__data.identities[0].__data.profile, ['photos']);
-        // delete user.__data.identities[0].__data.userId;
-        return user;
+        let userJson = user.toJSON();
+        userJson = assign({}, userJson, {
+          identities: [ {
+            profile: pick(userJson.identities[0].profile, ['photos'])
+          }]
+        });
+        return userJson;
       });
     }
     return users;
@@ -235,8 +233,6 @@ module.exports = function (User) {
   });
 
   User.consumeGame = function (id, game, options, cb) {
-    console.log(id);
-
     User.findById(id).then(user => {
       let languageStatistics;
       if (game.language in user.statistics === false) {

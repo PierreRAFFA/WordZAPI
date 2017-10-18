@@ -13,14 +13,13 @@ module.exports = function (app, passport) {
   app.post('/facebook/token',
     passport.authenticate('facebook-token'),
     function (req, res) {
-      console.log(req.body);
-
+      let needToSave = false;
       if (req.user) {
 
         //set created date and role to 'player' if new user
         if (!req.user.created) {
+          needToSave = true;
           req.user.created = new Date();
-          req.user.save();
 
           console.log('this is a new player !!!');
           Role.find({where: {name: 'player'}}, function(err, roles) {
@@ -43,7 +42,11 @@ module.exports = function (app, passport) {
 
         //save firebase token if exists
         if ('firebase_token' in req.body) {
+          needToSave = true;
           req.user.firebaseToken = req.body.firebase_token;
+        }
+
+        if(needToSave) {
           req.user.save();
         }
 
@@ -56,8 +59,10 @@ module.exports = function (app, passport) {
             res.status(500).send({statusCode: 500, message: 'No Profile Found'});
           } else {
             //return the user profile with identities
-            const userJson = assign({}, JSON.parse(JSON.stringify(req.user)), {
-              identities: JSON.parse(JSON.stringify(userIdentities))
+            const userJson = assign({}, req.user.toJSON(), {
+              identities: [
+                userIdentities[0].toJSON()
+              ]
             });
 
             res.setHeader('Content-Type', 'application/json');
@@ -92,11 +97,9 @@ module.exports = function (app, passport) {
         done(err);
       }else{
         User.login({ email: user.email, password: defaultPassword }, function (err, accessToken) {
-          console.log("accessToken after login:");
-
           // May be null if the user has just been created.
           // For now, I use token and not accessToken
-          console.log(accessToken);
+          // console.log(accessToken);
 
           user.accessToken = token.id;
           done(null, user);

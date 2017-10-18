@@ -11,3 +11,8 @@ This microservice manages the authentication and the games/ranking (should be sp
 - Facebook API  
 - Google API
 - Docker
+
+
+### Remove all users except Guest and Admin
+db.user.remove({$and:[{"username":{$not:{$eq:"Guest"}}}, {"username":{$not:{$eq:"Admin"}}}]})
+db.userIdentity.remove({})
