@@ -19,7 +19,7 @@
       "type": "number"
     },
     "highestScoringWord": {
-      "type": "string"
+      "type": ["object"]
     },
     "highestScoringWordScore": {
       "type": "number"
@@ -34,7 +34,7 @@
       "type": "number"
     },
     "longestWord": {
-      "type": "string"
+      "type": ["object"]
     },
     "numGames": {
       "type": "number"
