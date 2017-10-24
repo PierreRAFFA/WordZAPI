@@ -69,6 +69,7 @@ app.middleware('parse', bodyParser.urlencoded({
 // The access token is only available after boot
 app.middleware('auth', loopback.token({
   model: app.models.accessToken,
+  headers: ['authorization'],
   currentUserLiteral: 'me'
 }));
 

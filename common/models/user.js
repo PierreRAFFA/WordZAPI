@@ -252,9 +252,9 @@ module.exports = function (User) {
         languageStatistics.highestScoringWordScore = game.statistics.highestScoringWordScore;
       }
 
-      languageStatistics.totalWordsPerMinute = languageStatistics.totalWordsPerMinute + game.statistics.wordsPerMinute || game.statistics.wordsPerMinute;
-      languageStatistics.highestWordsPerMinute = Math.max(languageStatistics.highestWordsPerMinute, game.statistics.wordsPerMinute) || game.statistics.wordsPerMinute;
-      languageStatistics.averageWordsPerMinute = languageStatistics.totalWordsPerMinute / languageStatistics.numGames;
+      languageStatistics.totalNumberWords = languageStatistics.totalNumberWords + game.statistics.numberWords || game.statistics.numberWords;
+      languageStatistics.highestNumberWords = Math.max(languageStatistics.highestNumberWords, game.statistics.numberWords) || game.statistics.numberWords;
+      languageStatistics.averageNumberWords = languageStatistics.totalNumberWords / languageStatistics.numGames;
 
       if (!languageStatistics.longestWord ||
         game.statistics.longestWord.length > languageStatistics.longestWord.length) {

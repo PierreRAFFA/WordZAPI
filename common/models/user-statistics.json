@@ -24,13 +24,13 @@
     "highestScoringWordScore": {
       "type": "number"
     },
-    "highestWordsPerMinute": {
+    "highestNumberWords": {
       "type": "number"
     },
-    "averageWordsPerMinute": {
+    "averageNumberWords": {
       "type": "number"
     },
-    "totalWordsPerMinute": {
+    "totalNumberWords": {
       "type": "number"
     },
     "longestWord": {
